@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Call Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #responseMessage {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Call External API</h1>
+        <button id="callApiButton">Trigger Overlay Input</button>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById('callApiButton').addEventListener('click', async () => {
+            const apiUrl = "http://192.168.235.83:8088/api/?Function=OverlayInput2&Input=ICG&Mix=0";
+            const responseMessageElement = document.getElementById('responseMessage');
+
+            responseMessageElement.textContent = 'Calling API...';
+            responseMessageElement.className = ''; // Clear previous classes
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET', // Or 'POST' if the API expects it, but GET is common for such commands
+                    mode: 'cors'   // This is crucial for local development if the API is on a different port/domain
+                });
+
+                if (response.ok) {
+                    const data = await response.text(); // Use .text() as the API might return a simple string or XML
+                    responseMessageElement.textContent = `API Call Successful! Response: ${data.substring(0, 100)}...`; // Show a part of the response
+                    responseMessageElement.classList.add('success');
+                } else {
+                    responseMessageElement.textContent = `API Call Failed: ${response.status} ${response.statusText}`;
+                    responseMessageElement.classList.add('error');
+                }
+            } catch (error) {
+                responseMessageElement.textContent = `Error during API call: ${error.message}`;
+                responseMessageElement.classList.add('error');
+                console.error('Error calling the API:', error);
+            }
+        });
+    </script>
+</body>
+</html>
