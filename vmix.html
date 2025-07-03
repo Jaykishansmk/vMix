@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>vMix Controller</title>
+  <title>vMix Controller - Popup Workaround</title>
 </head>
 <body>
-  <h2>vMix Control Button</h2>
-  <button onclick="callVmix()">Activate Overlay</button>
+  <h2>vMix Overlay Control (No Installation Required)</h2>
+  <button onclick="openVmixCommand()">Send Overlay Command</button>
+
+  <p style="color: gray; font-size: 14px; max-width: 600px;">
+    ⚠️ આ પદ્ધતિમાં તમારા બ્રાઉઝરથી <code>http://192.168.x.x</code> પર popup window ખૂલશે અને <br>
+    vMix ને command મોકલશે. <strong>કોઈ external software કે installation ની જરૂર નથી.</strong><br>
+    તમારા browser popup allow કરતું હોવું જોઇએ.
+  </p>
 
   <script>
-    function callVmix() {
-      const vmixUrl = "http://192.168.235.83:8088/api/?Function=OverlayInput2&Input=ICG&Mix=0";
-      fetch(vmixUrl)
-        .then(response => response.text())
-        .then(data => {
-          console.log("vMix response:", data);
-          alert("Command sent to vMix!");
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          alert("Failed to contact vMix. Make sure you're on HTTP.");
-        });
+    function openVmixCommand() {
+      const vmixCommand = "http://192.168.235.83:8088/api/?Function=OverlayInput2&Input=ICG&Mix=0";
+      const win = window.open(vmixCommand, '_blank');
+      if (win) {
+        setTimeout(() => win.close(), 2000); // auto close popup after 2 seconds (optional)
+        window.focus();
+      } else {
+        alert("Please allow popups for this website in your browser settings.");
+      }
     }
   </script>
 </body>
